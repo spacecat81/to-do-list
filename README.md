@@ -1,4 +1,4 @@
-#A simple to-do list application.
+# A simple to-do list application
 
 ## How to run
 
