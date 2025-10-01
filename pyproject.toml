@@ -11,5 +11,5 @@ requires-python = ">=3.10"
 dependencies = [
     "fastapi >= 0.95.0, < 0.96.0",
     "uvicorn[standard] >= 0.22.0",
-    "debugpy >= 1.8.13"
+    "debugpy >= 1.8.13",
 ]
