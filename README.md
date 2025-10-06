@@ -12,6 +12,6 @@ Debug run:
 ``` 
 docker compose -f docker-compose.debug.yml up --build
 ```
-Go to `http://localhost:8000/ping`
+Go to `http://localhost:8000/docs` or `http://localhost:8000/redoc` to  try all endpoints
 
 Enjoy!
