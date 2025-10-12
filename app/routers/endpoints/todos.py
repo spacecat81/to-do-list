@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
 from models import Todo
 
-router = APIRouter()
+router = APIRouter(prefix="/todos", tags=["To-do list"])
 
 todos = []
 
