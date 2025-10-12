@@ -4,23 +4,18 @@ from models import Todo
 
 router = APIRouter(prefix="/todos", tags=["To-do list"])
 
-todos = []
+todos = {}
 
 def get_next_id():
     return len(todos) + 1
 
 def find_todo_by_id(todo_id: int):
-    for todo in todos:
-        if todo.id == todo_id:
-            return todo
-    return None
+    return todos.get(todo_id)
 
 
 @router.get("/", summary="Get all todos")
 async def get_todos():
-    for todo in todos:
-        print(todo)
-    return todos
+    return list(todos.values())
 
 
 @router.get("/{todo_id}", summary="Get a todo by id")
@@ -33,13 +28,14 @@ async def get_todo(todo_id: int):
 
 @router.post("/", summary="Create a todo")
 async def create_todo(todo: Todo):
+    todo_id = get_next_id()
     new_todo = Todo(
-        id=get_next_id(),
+        id=todo_id,
         title=todo.title,
         description=todo.description,
         created_at=datetime.now(timezone.utc)
     )
-    todos.append(new_todo)
+    todos[todo_id] = new_todo
     return new_todo
 
 
@@ -51,14 +47,14 @@ async def update_todo(todo_id: int, updated_todo: Todo):
     
     todo.title = updated_todo.title
     todo.description = updated_todo.description
+    todos[todo_id] = todo
     return todo
 
 
 @router.delete("/{todo_id}", summary="Delete a todo")
 async def delete_todo(todo_id: int):
-    todo = find_todo_by_id(todo_id)
+    todo = todos.pop(todo_id, None)
     if todo is None:
         raise HTTPException(status_code=404, detail="Todo not found")
     
-    todos.remove(todo)
     return todo
