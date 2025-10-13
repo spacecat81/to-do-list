@@ -1,12 +1,17 @@
 from pydantic import BaseModel
 from datetime import datetime
-from enum import Enum
+from enum import StrEnum
 
 
-class TaskStatus(Enum):
+class TaskStatus(StrEnum):
     TODO = "todo"
     IN_PROGRESS = "in_progress"
     DONE = "done"
+
+
+class TodoCreate(BaseModel):
+    title: str
+    description: str
 
 
 class Todo(BaseModel):

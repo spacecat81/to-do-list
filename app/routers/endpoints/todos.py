@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from datetime import datetime, timezone
-from models import Todo, TaskStatus
+from models import Todo, TodoCreate, TaskStatus
 
 router = APIRouter(prefix="/todos", tags=["To-do list"])
 
@@ -27,13 +27,13 @@ async def get_todo(todo_id: int):
 
 
 @router.post("/", summary="Create a todo")
-async def create_todo(todo: Todo):
+async def create_todo(todo: TodoCreate):
     todo_id = get_next_id()
     new_todo = Todo(
         id=todo_id,
         title=todo.title,
         description=todo.description,
-        status=todo.status,
+        status=TaskStatus.TODO,
         created_at=datetime.now(timezone.utc)
     )
     todos[todo_id] = new_todo
@@ -60,7 +60,6 @@ async def update_todo_status(todo_id: int, status: TaskStatus):
         raise HTTPException(status_code=404, detail="Todo not found")
     
     todo.status = status
-    todos[todo_id] = todo
     return todo
 
 
