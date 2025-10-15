@@ -12,4 +12,27 @@ dependencies = [
     "fastapi >= 0.95.0, < 0.96.0",
     "uvicorn[standard] >= 0.22.0",
     "debugpy >= 1.8.13",
+    "ruff >= 0.14.0",
 ]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "UP", # pyupgrade
+]
+ignore = [
+    "E501",  # line too long, handled by formatter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"__init__.py" = ["F401"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
