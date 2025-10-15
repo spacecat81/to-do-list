@@ -2,16 +2,27 @@
 
 ## How to run
 
+Build (no debugger):
+
+```
+make build
+```
 Run (no debugger):
 
 ```
-docker compose up --build
+make up
 ```
 Debug run:
 
 ``` 
-docker compose -f docker-compose.debug.yml up --build
+make debug
 ```
+
+Help:
+```
+make help
+```
+
 Go to `http://localhost:8000/docs` or `http://localhost:8000/redoc` to  try all endpoints
 
 Enjoy!
