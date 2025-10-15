@@ -19,8 +19,8 @@ down: ## Stop the application
 
 test: ## Run tests
 	@echo "Tests:"
-	#доделаю в следующем ПР
+	#will be added in the next PR
 
 checks: ## Run code checks
 	@echo "Checks:"
-	#доделаю в следующем ПР
+	#will be added in the next PR
