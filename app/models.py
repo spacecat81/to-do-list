@@ -1,6 +1,7 @@
-from pydantic import BaseModel
 from datetime import datetime
 from enum import StrEnum
+
+from pydantic import BaseModel
 
 
 class TaskStatus(StrEnum):
