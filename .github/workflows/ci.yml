@@ -1,0 +1,38 @@
+name: app CI
+
+on:
+  pull_request:
+    branches: [ master ]
+  push:
+    branches: [ master ]
+
+jobs:
+  lint:
+    name: Run Ruff linter
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.13
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install uv
+        run: |
+          pip install uv
+
+      - name: Install dependencies
+        run: |
+          uv sync --frozen
+
+      - name: Run Ruff linter
+        run: |
+          uv run ruff check .
+
+      - name: Run Ruff fmt
+        run: |
+          uv run ruff format --check .
+          
