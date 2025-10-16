@@ -1,4 +1,4 @@
-.PHONY: help build up down debug test checks lint fmt lint-fix fmt-check
+.PHONY: help build up down debug test lint fmt
 
 help: ## Show this help message
 	@echo "Help:"
@@ -21,21 +21,12 @@ down: ## Stop the application
 	@echo "Down:"
 	docker-compose down
 
-lint: ## Run Ruff linter
-	@echo "Run Ruff linter"
+lint: ## Check code (linting and formatting)
+	@echo "Check code"
 	ruff check app/
-
-fmt-check: ## Check code formatting with Ruff
-	@echo "heck code formatting with Ruff"
 	ruff format --check app/
 
-lint-fix: ## Run Ruff linter with auto-fix
-	@echo "Run Ruff linter with auto-fix"
+fmt: ## Fix and format code
+	@echo "Fix and format code"
 	ruff check --fix app/
-
-fmt: ## Format code with Ruff
-	@echo "Format code with Ruff"
 	ruff format app/
-
-checks: lint fmt-check ## Run all code checks (linting and formatting)
-	@echo "Run all code checks."
