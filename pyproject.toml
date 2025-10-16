@@ -7,7 +7,7 @@ name = "to-do-list"
 version = "0.1.0"  
 description = "A simple to-do list application"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
     "fastapi >= 0.95.0, < 0.96.0",
     "uvicorn[standard] >= 0.22.0",
@@ -16,7 +16,7 @@ dependencies = [
 ]
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py313"
 line-length = 88
 
 [tool.ruff.lint]
@@ -35,4 +35,7 @@ ignore = [
 "__init__.py" = ["F401"]
 
 [tool.ruff.lint.isort]
-known-first-party = ["app"]
+detect-same-package = true
+force-sort-within-sections = true
+combine-as-imports = true
+

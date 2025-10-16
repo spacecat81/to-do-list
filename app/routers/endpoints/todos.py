@@ -1,7 +1,8 @@
-from datetime import datetime, timezone
+from datetime import datetime
 
 from fastapi import APIRouter, HTTPException
-from models import TaskStatus, Todo, TodoCreate
+
+from app.models import TaskStatus, Todo, TodoCreate
 
 router = APIRouter(prefix="/todos", tags=["To-do list"])
 
@@ -37,7 +38,7 @@ async def create_todo(todo: TodoCreate):
         title=todo.title,
         description=todo.description,
         status=TaskStatus.TODO,
-        created_at=datetime.now(timezone.utc),
+        created_at=datetime.now(datetime.UTC),
     )
     todos[todo_id] = new_todo
     return new_todo
