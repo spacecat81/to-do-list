@@ -1,4 +1,4 @@
-.PHONY: help build up down test checks
+.PHONY: help build up down debug test lint fmt
 
 help: ## Show this help message
 	@echo "Help:"
@@ -12,15 +12,21 @@ build: ## Build Docker image
 up: ## Start the application
 	@echo "Up:"
 	docker-compose up -d
+
+debug: ## Start the application in debug mode
+	@echo "Debug:"
+	docker-compose -f docker-compose.debug.yml up --build
 	
 down: ## Stop the application
 	@echo "Down:"
 	docker-compose down
 
-test: ## Run tests
-	@echo "Tests:"
-	#will be added in the next PR
+lint: ## Check code (linting and formatting)
+	@echo "Check code"
+	ruff check app/
+	ruff format --check app/
 
-checks: ## Run code checks
-	@echo "Checks:"
-	#will be added in the next PR
+fmt: ## Fix and format code
+	@echo "Fix and format code"
+	ruff check --fix app/
+	ruff format app/
