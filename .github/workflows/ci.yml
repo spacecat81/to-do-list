@@ -2,9 +2,9 @@ name: app CI
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [master]
   push:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   lint:
@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python 3.13
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: "3.13"
 
       - name: Install uv
         run: |
@@ -26,7 +26,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --frozen
+          uv pip install --system -r pyproject.toml
 
       - name: Run Ruff linter
         run: |
@@ -35,4 +35,3 @@ jobs:
       - name: Run Ruff fmt
         run: |
           uv run ruff format --check .
-          
