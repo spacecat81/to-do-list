@@ -26,12 +26,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install --system -r pyproject.toml
+          uv sync --frozen --no-install-project --no-dev
 
       - name: Run Ruff linter
         run: |
-          ruff check --output-format=github .
+          uv run ruff check --output-format=github .
 
       - name: Run Ruff fmt
         run: |
-          ruff format --check .
+          uv run ruff format --check .
