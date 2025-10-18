@@ -28,10 +28,7 @@ jobs:
         run: |
           uv sync --frozen --no-install-project --no-dev
 
-      - name: Run Ruff linter
+      - name: Run lint
         run: |
-          uv run ruff check --output-format=github .
-
-      - name: Run Ruff fmt
-        run: |
-          uv run ruff format --check .
+          uv run make lint
+          
