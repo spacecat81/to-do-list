@@ -31,4 +31,3 @@ jobs:
       - name: Run lint
         run: |
           uv run make lint
-          
