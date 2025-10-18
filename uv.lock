@@ -220,7 +220,7 @@ wheels = [
 [[package]]
 name = "to-do-list"
 version = "0.1.0"
-source = { editable = "." }
+source = { virtual = "." }
 dependencies = [
     { name = "debugpy" },
     { name = "fastapi" },
