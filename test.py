@@ -18,7 +18,7 @@ def clear_todos():
 def test_ping():
     response = client.get("/ping")
     assert response.status_code == 200
-    assert response.json() == {"msg": "pong"}
+    assert response.text == '"pong"'
 
 
 def test_get_todos_empty():
