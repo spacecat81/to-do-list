@@ -1,4 +1,4 @@
-.PHONY: help build up down debug test lint fmt
+.PHONY: help build up down debug test test-quiet install-test lint fmt
 
 help: ## Show this help message
 	@echo "Help:"
@@ -30,3 +30,7 @@ fmt: ## Fix and format code
 	@echo "Fix and format code"
 	ruff check --fix app/
 	ruff format app/
+
+test: ## Run tests
+	@echo "Running tests"
+	uv run pytest test.py -v
