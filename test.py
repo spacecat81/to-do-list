@@ -1,38 +1,48 @@
 import pytest
-from fastapi.testclient import TestClient
+import pytest_asyncio
+from httpx import AsyncClient, ASGITransport
+from sqlalchemy import text
 
 from app.main import app
 from app.models import TaskStatus
-from app.routers.endpoints.todos import todos
-
-client = TestClient(app)
+from app.database import AsyncSessionLocal
 
 
-@pytest.fixture(autouse=True)
-def clear_todos():
-    todos.clear()
-    yield
-    todos.clear()
+@pytest_asyncio.fixture(scope="function", autouse=True)
+async def clean_db():
+    """Clean database before each test and reset auto-increment counter."""
+    async with AsyncSessionLocal() as session:
+        await session.execute(text("TRUNCATE TABLE todos RESTART IDENTITY CASCADE"))
+        await session.commit()
 
 
-def test_ping():
-    response = client.get("/ping")
+@pytest_asyncio.fixture
+async def client():
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        yield ac
+
+
+@pytest.mark.asyncio
+async def test_ping(client: AsyncClient):
+    response = await client.get("/ping")
     assert response.status_code == 200
     assert response.text == '"pong"'
 
 
-def test_get_todos_empty():
-    response = client.get("/todos/")
+@pytest.mark.asyncio
+async def test_get_todos_empty(client: AsyncClient):
+    response = await client.get("/todos/")
     assert response.status_code == 200
     assert response.json() == []
 
 
-def test_create_todo():
+@pytest.mark.asyncio
+async def test_create_todo(client: AsyncClient):
     todo_data = {
         "title": "Test Todo",
         "description": "This is a test todo"
     }
-    response = client.post("/todos/", json=todo_data)
+    response = await client.post("/todos/", json=todo_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -43,13 +53,14 @@ def test_create_todo():
     assert "created_at" in data
 
 
-def test_get_todos_with_data():
+@pytest.mark.asyncio
+async def test_get_todos_with_data(client: AsyncClient):
     todo_data = {
         "title": "Test Todo",
         "description": "This is a test todo"
     }
-    client.post("/todos/", json=todo_data)
-    response = client.get("/todos/")
+    await client.post("/todos/", json=todo_data)
+    response = await client.get("/todos/")
     assert response.status_code == 200
     
     data = response.json()
@@ -59,15 +70,16 @@ def test_get_todos_with_data():
     assert data[0]["status"] == TaskStatus.TODO
 
 
-def test_get_todo_by_id():
+@pytest.mark.asyncio
+async def test_get_todo_by_id(client: AsyncClient):
     todo_data = {
         "title": "Test Todo",
         "description": "This is a test todo"
     }
-    create_response = client.post("/todos/", json=todo_data)
+    create_response = await client.post("/todos/", json=todo_data)
     todo_id = create_response.json()["id"]
     
-    response = client.get(f"/todos/{todo_id}")
+    response = await client.get(f"/todos/{todo_id}")
     assert response.status_code == 200
     
     data = response.json()
@@ -77,12 +89,13 @@ def test_get_todo_by_id():
     assert data["id"] == todo_id
 
 
-def test_update_todo():
+@pytest.mark.asyncio
+async def test_update_todo(client: AsyncClient):
     todo_data = {
         "title": "Test Todo",
         "description": "This is a test todo"
     }
-    create_response = client.post("/todos/", json=todo_data)
+    create_response = await client.post("/todos/", json=todo_data)
     todo_id = create_response.json()["id"]
     
     updated_todo_data = {
@@ -92,7 +105,7 @@ def test_update_todo():
         "status": TaskStatus.IN_PROGRESS,
         "created_at": create_response.json()["created_at"]
     }
-    response = client.put(f"/todos/{todo_id}", json=updated_todo_data)
+    response = await client.put(f"/todos/{todo_id}", json=updated_todo_data)
     assert response.status_code == 200
     
     data = response.json()
@@ -102,15 +115,16 @@ def test_update_todo():
     assert data["id"] == todo_id
 
 
-def test_update_todo_status():
+@pytest.mark.asyncio
+async def test_update_todo_status(client: AsyncClient):
     todo_data = {
         "title": "Test Todo",
         "description": "This is a test todo"
     }
-    create_response = client.post("/todos/", json=todo_data)
+    create_response = await client.post("/todos/", json=todo_data)
     todo_id = create_response.json()["id"]
     
-    response = client.patch(f"/todos/{todo_id}/status?status={TaskStatus.DONE}")
+    response = await client.patch(f"/todos/{todo_id}/status?status={TaskStatus.DONE}")
     assert response.status_code == 200
     
     data = response.json()
@@ -120,15 +134,16 @@ def test_update_todo_status():
     assert data["id"] == todo_id
 
 
-def test_delete_todo():
+@pytest.mark.asyncio
+async def test_delete_todo(client: AsyncClient):
     todo_data = {
         "title": "Test Todo",
         "description": "This is a test todo"
     }
-    create_response = client.post("/todos/", json=todo_data)
+    create_response = await client.post("/todos/", json=todo_data)
     todo_id = create_response.json()["id"]
     
-    response = client.delete(f"/todos/{todo_id}")
+    response = await client.delete(f"/todos/{todo_id}")
     assert response.status_code == 200
     
     data = response.json()
@@ -136,18 +151,19 @@ def test_delete_todo():
     assert data["description"] == "This is a test todo"
     assert data["id"] == todo_id
     
-    get_response = client.get(f"/todos/{todo_id}")
+    get_response = await client.get(f"/todos/{todo_id}")
     assert get_response.status_code == 404
 
 
-def test_get_todos_after_operations():
+@pytest.mark.asyncio
+async def test_get_todos_after_operations(client: AsyncClient):
     todo1_data = {"title": "Todo 1", "description": "First todo"}
     todo2_data = {"title": "Todo 2", "description": "Second todo"}
     
-    client.post("/todos/", json=todo1_data)
-    client.post("/todos/", json=todo2_data)
+    await client.post("/todos/", json=todo1_data)
+    await client.post("/todos/", json=todo2_data)
     
-    response = client.get("/todos/")
+    response = await client.get("/todos/")
     assert response.status_code == 200
     
     data = response.json()

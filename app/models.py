@@ -2,6 +2,10 @@ from datetime import datetime
 from enum import StrEnum
 
 from pydantic import BaseModel
+from sqlalchemy import Column, DateTime, Enum as SQLEnum, Integer, String
+from sqlalchemy.sql import func
+
+from app.database import Base
 
 
 class TaskStatus(StrEnum):
@@ -21,3 +25,17 @@ class Todo(BaseModel):
     description: str
     status: TaskStatus = TaskStatus.TODO
     created_at: datetime
+
+
+class TodoDB(Base):
+    __tablename__ = "todos"
+
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String, nullable=False)
+    description = Column(String, nullable=False)
+    status = Column(
+        SQLEnum(TaskStatus, native_enum=False), default=TaskStatus.TODO, nullable=False
+    )
+    created_at = Column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False
+    )
