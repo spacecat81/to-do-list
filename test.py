@@ -4,8 +4,16 @@ from httpx import AsyncClient, ASGITransport
 from sqlalchemy import text
 
 from app.main import app
-from app.models import TaskStatus
-from app.database import AsyncSessionLocal
+from app.models import TaskStatus, Base
+from app.database import AsyncSessionLocal, engine
+
+
+@pytest_asyncio.fixture(scope="session", autouse=True)
+async def setup_database():
+    """Create database tables before running tests."""
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
 
 
 @pytest_asyncio.fixture(scope="function", autouse=True)
