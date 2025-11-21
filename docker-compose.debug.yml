@@ -11,12 +11,8 @@ services:
     volumes:
       - ./app:/app
     restart: unless-stopped
-    environment:
-      - POSTGRES_HOST=postgres
-      - POSTGRES_PORT=5432
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=todolist
+    env_file:
+      - .env
     depends_on:
       postgres:
         condition: service_healthy
@@ -24,10 +20,8 @@ services:
   postgres:
     image: postgres:16-alpine
     container_name: to_do_list_postgres
-    environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=todolist
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
