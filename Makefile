@@ -61,6 +61,7 @@ fmt: ## Fix and format code
 test: ## Run tests
 	@echo "Running tests"
 	@echo "Note: Data may persist between test runs. Use 'make test-clean' to reset DB first."
+	@uv sync --extra test > /dev/null 2>&1 || true
 	uv run pytest test.py -v
 
 test-clean: ## Clean database and run tests

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 
 from app.database import engine
 from app.models import Base
-from app.routers.endpoints import router
+from app.routers.endpoints import auth_router, todos_router
 
 
 @asynccontextmanager
@@ -17,7 +17,8 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(router)
+app.include_router(auth_router)
+app.include_router(todos_router)
 
 
 @app.get("/ping", tags=["Ping"], summary="Pong :D")
