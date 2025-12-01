@@ -27,7 +27,9 @@ class Settings(BaseSettings):
     )
 
     # Password validation settings
-    password_min_length: int = Field(default=8, alias="PASSWORD_MIN_LENGTH", ge=6, le=128)
+    password_min_length: int = Field(
+        default=8, alias="PASSWORD_MIN_LENGTH", ge=6, le=128
+    )
     password_require_uppercase: bool = Field(
         default=True, alias="PASSWORD_REQUIRE_UPPERCASE"
     )
@@ -57,4 +59,3 @@ class Settings(BaseSettings):
 
 # Global settings instance
 settings = Settings()
-

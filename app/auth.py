@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
 
 import bcrypt
@@ -31,22 +31,20 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None) -> s
     """Create JWT access token with expiration."""
     to_encode = data.copy()
     if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
+        expire = datetime.now(UTC) + expires_delta
     else:
-        expire = datetime.now(timezone.utc) + timedelta(
+        expire = datetime.now(UTC) + timedelta(
             minutes=settings.access_token_expire_minutes
         )
 
-    to_encode.update({"exp": expire, "iat": datetime.now(timezone.utc)})
+    to_encode.update({"exp": expire, "iat": datetime.now(UTC)})
     encoded_jwt = jwt.encode(
         to_encode, settings.secret_key, algorithm=settings.algorithm
     )
     return encoded_jwt
 
 
-async def get_user_by_username(
-    username: str, db: AsyncSession
-) -> UserDB | None:
+async def get_user_by_username(username: str, db: AsyncSession) -> UserDB | None:
     result = await db.execute(select(UserDB).where(UserDB.username == username))
     return result.scalar_one_or_none()
 
@@ -99,4 +97,3 @@ async def get_current_user(
         )
 
     return user
-

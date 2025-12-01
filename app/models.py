@@ -2,7 +2,15 @@ from datetime import datetime
 from enum import StrEnum
 
 from pydantic import BaseModel, EmailStr
-from sqlalchemy import Boolean, Column, DateTime, Enum as SQLEnum, ForeignKey, Integer, String
+from sqlalchemy import (
+    Boolean,
+    Column,
+    DateTime,
+    Enum as SQLEnum,
+    ForeignKey,
+    Integer,
+    String,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 

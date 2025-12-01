@@ -1,7 +1,5 @@
 import re
 
-from pydantic import ValidationError
-
 from app.config import settings
 
 
@@ -44,4 +42,3 @@ def validate_password_strength(password: str) -> None:
 
     if errors:
         raise PasswordValidationError("; ".join(errors))
-

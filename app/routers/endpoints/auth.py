@@ -20,7 +20,9 @@ from app.validators import PasswordValidationError, validate_password_strength
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
+@router.post(
+    "/register", status_code=status.HTTP_201_CREATED, response_model=UserResponse
+)
 async def register(
     user_data: UserCreate,
     db: AsyncSession = Depends(get_db),
@@ -82,9 +84,7 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token_expires = timedelta(
-        minutes=settings.access_token_expire_minutes
-    )
+    access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
@@ -103,4 +103,3 @@ async def read_users_me(
         is_active=current_user.is_active,
         created_at=current_user.created_at,
     )
-

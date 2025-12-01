@@ -27,9 +27,7 @@ async def get_todos(
     current_user: Annotated[UserDB, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    result = await db.execute(
-        select(TodoDB).where(TodoDB.owner_id == current_user.id)
-    )
+    result = await db.execute(select(TodoDB).where(TodoDB.owner_id == current_user.id))
     todos = result.scalars().all()
     return [todo_db_to_pydantic(todo) for todo in todos]
 
@@ -41,9 +39,7 @@ async def get_todo(
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
     result = await db.execute(
-        select(TodoDB).where(
-            TodoDB.id == todo_id, TodoDB.owner_id == current_user.id
-        )
+        select(TodoDB).where(TodoDB.id == todo_id, TodoDB.owner_id == current_user.id)
     )
     todo_db = result.scalar_one_or_none()
     if todo_db is None:
@@ -78,11 +74,8 @@ async def update_todo(
     current_user: Annotated[UserDB, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    
     result = await db.execute(
-        select(TodoDB).where(
-            TodoDB.id == todo_id, TodoDB.owner_id == current_user.id
-        )
+        select(TodoDB).where(TodoDB.id == todo_id, TodoDB.owner_id == current_user.id)
     )
     todo_db = result.scalar_one_or_none()
     if todo_db is None:
@@ -105,11 +98,8 @@ async def update_todo_status(
     current_user: Annotated[UserDB, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    
     result = await db.execute(
-        select(TodoDB).where(
-            TodoDB.id == todo_id, TodoDB.owner_id == current_user.id
-        )
+        select(TodoDB).where(TodoDB.id == todo_id, TodoDB.owner_id == current_user.id)
     )
     todo_db = result.scalar_one_or_none()
     if todo_db is None:
@@ -129,11 +119,8 @@ async def delete_todo(
     current_user: Annotated[UserDB, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_db)],
 ):
-    
     result = await db.execute(
-        select(TodoDB).where(
-            TodoDB.id == todo_id, TodoDB.owner_id == current_user.id
-        )
+        select(TodoDB).where(TodoDB.id == todo_id, TodoDB.owner_id == current_user.id)
     )
     todo_db = result.scalar_one_or_none()
     if todo_db is None:
@@ -142,9 +129,7 @@ async def delete_todo(
         )
 
     await db.execute(
-        delete(TodoDB).where(
-            TodoDB.id == todo_id, TodoDB.owner_id == current_user.id
-        )
+        delete(TodoDB).where(TodoDB.id == todo_id, TodoDB.owner_id == current_user.id)
     )
     await db.commit()
     return todo_db_to_pydantic(todo_db)
