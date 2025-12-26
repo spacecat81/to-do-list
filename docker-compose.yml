@@ -1,4 +1,18 @@
 services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: to_do_list_frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    restart: unless-stopped
+    depends_on:
+      - app
+
   app:
     build:
       context: .
@@ -8,6 +22,7 @@ services:
       - "8000:8000"
     volumes:
       - ./:/app
+      - app_venv:/app/.venv
     restart: unless-stopped
     env_file:
       - .env
@@ -26,10 +41,11 @@ services:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
 
 volumes:
   postgres_data:
+  app_venv:

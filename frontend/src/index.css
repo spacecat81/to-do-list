@@ -1,0 +1,250 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==================== DARK THEME (default) ==================== */
+/* #5F6F52 - фон, #A9B388 - акцент, #FEFAE0 - текст, #B99470 - вторичный */
+body {
+  background-color: #5F6F52;
+  color: #FEFAE0;
+  @apply min-h-screen transition-colors duration-300;
+}
+
+.card {
+  background-color: #6b7d5c;
+  border-color: #A9B388;
+}
+
+.glass {
+  background-color: rgba(95, 111, 82, 0.95);
+  border-color: #A9B388;
+}
+
+.input {
+  background-color: #6b7d5c;
+  border-color: #A9B388;
+  color: #FEFAE0;
+}
+
+.input::placeholder {
+  color: #A9B388;
+}
+
+.input:focus {
+  border-color: #B99470;
+  box-shadow: 0 0 0 2px rgba(185, 148, 112, 0.3);
+}
+
+/* ==================== LIGHT THEME ==================== */
+/* #FEF5ED - фон, #D3E4CD - светлый, #ADC2A9 - акцент, #99A799 - тёмный */
+html.light body {
+  background-color: #FEF5ED;
+  color: #5F6F52;
+}
+
+html.light .card {
+  background-color: #ffffff;
+  border-color: #D3E4CD;
+  box-shadow: 0 10px 25px -5px rgba(153, 167, 153, 0.15);
+}
+
+html.light .glass {
+  background-color: rgba(254, 245, 237, 0.95);
+  border-color: #D3E4CD;
+}
+
+html.light .input {
+  background-color: #ffffff;
+  border-color: #D3E4CD;
+  color: #5F6F52;
+}
+
+html.light .input::placeholder {
+  color: #99A799;
+}
+
+html.light .input:focus {
+  border-color: #ADC2A9;
+  box-shadow: 0 0 0 2px rgba(173, 194, 169, 0.3);
+}
+
+html.light .btn-secondary {
+  background-color: #D3E4CD;
+  color: #5F6F52;
+}
+
+html.light .btn-secondary:hover {
+  background-color: #ADC2A9;
+}
+
+html.light .btn-ghost {
+  color: #99A799;
+}
+
+html.light .btn-ghost:hover {
+  color: #5F6F52;
+  background-color: rgba(211, 228, 205, 0.5);
+}
+
+html.light .btn-primary {
+  background-color: #99A799;
+  color: #ffffff;
+}
+
+html.light .btn-primary:hover {
+  background-color: #8a9a8a;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background-color: #FEF5ED;
+}
+
+html.light ::-webkit-scrollbar-thumb {
+  background-color: #D3E4CD;
+}
+
+html.light ::-webkit-scrollbar-thumb:hover {
+  background-color: #ADC2A9;
+}
+
+/* Light theme text colors */
+html.light .text-dark-100 { color: #5F6F52; }
+html.light .text-dark-200 { color: #6b7d5c; }
+html.light .text-dark-300 { color: #99A799; }
+html.light .text-dark-400 { color: #99A799; }
+html.light .text-dark-500 { color: #ADC2A9; }
+
+/* Light theme backgrounds */
+html.light .bg-dark-700 { background-color: #D3E4CD; }
+html.light .bg-dark-700\/50 { background-color: rgba(211, 228, 205, 0.5); }
+html.light .bg-dark-800 { background-color: #ffffff; }
+html.light .bg-dark-800\/50 { background-color: rgba(255, 255, 255, 0.5); }
+html.light .bg-dark-900 { background-color: #FEF5ED; }
+
+/* Light theme borders */
+html.light .border-dark-600 { border-color: #ADC2A9; }
+html.light .border-dark-700 { border-color: #D3E4CD; }
+html.light .border-dark-700\/50 { border-color: rgba(211, 228, 205, 0.5); }
+
+/* Light theme hover states */
+html.light .hover\:bg-dark-600:hover { background-color: #ADC2A9; }
+html.light .hover\:bg-dark-700:hover { background-color: #D3E4CD; }
+html.light .hover\:bg-dark-700\/50:hover { background-color: rgba(211, 228, 205, 0.5); }
+html.light .hover\:text-dark-100:hover { color: #5F6F52; }
+html.light .hover\:text-dark-200:hover { color: #6b7d5c; }
+html.light .hover\:text-dark-300:hover { color: #99A799; }
+html.light .hover\:border-dark-600:hover { border-color: #ADC2A9; }
+
+/* WTD Logo - letter T color for light theme */
+html.light .wtd-letter-t { color: #5F6F52 !important; }
+
+/* Subtitle text for light theme */
+html.light .subtitle-text { color: #99A799 !important; }
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #5F6F52;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #A9B388;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #B99470;
+}
+
+/* Focus styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-offset-2;
+  --tw-ring-color: #B99470;
+  --tw-ring-offset-color: #5F6F52;
+}
+
+/* Selection */
+::selection {
+  background-color: rgba(185, 148, 112, 0.3);
+  color: #FEFAE0;
+}
+
+html.light *:focus-visible {
+  --tw-ring-color: #ADC2A9;
+  --tw-ring-offset-color: #FEF5ED;
+}
+
+html.light ::selection {
+  background-color: rgba(173, 194, 169, 0.3);
+  color: #5F6F52;
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2.5 rounded-xl font-medium transition-all duration-200 
+           inline-flex items-center justify-center gap-2 
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    background-color: #B99470;
+    color: #FEFAE0;
+    @apply hover:opacity-90 active:scale-[0.98];
+    box-shadow: 0 10px 25px -5px rgba(185, 148, 112, 0.3);
+  }
+
+  .btn-secondary {
+    background-color: #6b7d5c;
+    color: #A9B388;
+    @apply hover:opacity-80 active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply bg-transparent active:scale-[0.98];
+    color: #A9B388;
+  }
+  
+  .btn-ghost:hover {
+    color: #FEFAE0;
+    background-color: rgba(169, 179, 136, 0.3);
+  }
+
+  .btn-danger {
+    @apply bg-red-500/10 text-red-400 hover:bg-red-500/20
+           active:scale-[0.98];
+  }
+
+  .input {
+    @apply w-full px-4 py-3 rounded-xl transition-all duration-200;
+  }
+
+  .card {
+    @apply rounded-2xl shadow-xl shadow-black/20;
+  }
+
+  .glass {
+    @apply backdrop-blur-xl;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-[#A9B388] to-[#B99470] bg-clip-text text-transparent;
+  }
+}
