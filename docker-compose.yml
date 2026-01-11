@@ -21,8 +21,9 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./:/app
-      - app_venv:/app/.venv
+      - ./app:/app/app
+      - ./pyproject.toml:/app/pyproject.toml
+      - ./uv.lock:/app/uv.lock
     restart: unless-stopped
     env_file:
       - .env
@@ -48,4 +49,3 @@ services:
 
 volumes:
   postgres_data:
-  app_venv:

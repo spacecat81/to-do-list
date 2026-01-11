@@ -1,43 +1,35 @@
-# A simple to-do list application
+# To-Do List Application
+
+A modern full-stack to-do list application with Kanban board interface, built with FastAPI and React.
 
 ## Setup
 
-Before running the application, you need to configure environment variables:
-
-1. Copy the example environment file:
+1. Copy environment file:
 
    ```bash
    cp .env.example .env
    ```
 
-2. Edit `.env` file and update the values, especially `POSTGRES_PASSWORD` with a secure password.
+2. Edit `.env` file and update the values, especially `POSTGRES_PASSWORD`.
 
-## How to run
+## How to Run
 
-Build (no debugger):
-
-```
+```bash
+# Build Docker images
 make build
-```
 
-Run (no debugger):
-
-```
+# Start the application
 make up
 ```
 
-Debug run:
+## Usage
 
-```
-make debug
-```
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8000
+- **API Documentation**:
+  - http://localhost:8000/docs (Swagger UI)
+  - http://localhost:8000/redoc (ReDoc)
 
-Help:
+## Available Commands
 
-```
-make help
-```
-
-Go to `http://localhost:8000/docs` or `http://localhost:8000/redoc` to try all endpoints
-
-Enjoy!
+Run `make help` to see all available commands.
