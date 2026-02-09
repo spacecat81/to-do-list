@@ -1,13 +1,29 @@
 import { useState, FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { LogIn, User, Lock, AlertCircle, Loader2 } from 'lucide-react'
+import { motion } from 'framer-motion'
+import { LogIn, User, Lock, Loader2 } from 'lucide-react'
+import { toast } from 'sonner'
 import { useAuthStore } from '../../store/authStore'
 import { useSettingsStore } from '../../store/settingsStore'
+
+const stagger = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
+  },
+}
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.2, 0, 0, 1] } },
+}
 
 export function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const { login, isLoading, error, clearError } = useAuthStore()
+  const [shaking, setShaking] = useState(false)
+  const { login, isLoading } = useAuthStore()
   const { t } = useSettingsStore()
   const navigate = useNavigate()
 
@@ -16,23 +32,31 @@ export function LoginForm() {
     try {
       await login({ username, password })
       navigate('/')
-    } catch {}
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Login failed'
+      toast.error(message)
+      setShaking(true)
+      setTimeout(() => setShaking(false), 500)
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {error && (
-        <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 animate-slide-up">
-          <AlertCircle className="w-5 h-5 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
-          <button type="button" onClick={clearError} className="ml-auto text-red-400/60 hover:text-red-400">×</button>
-        </div>
-      )}
-      
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-dark-300">{t('username')}</label>
+    <motion.form
+      onSubmit={handleSubmit}
+      variants={stagger}
+      initial="hidden"
+      animate="show"
+      className={`space-y-5 ${shaking ? 'animate-shake' : ''}`}
+    >
+      <motion.div variants={fadeUp} className="space-y-1.5">
+        <label className="md-label-medium" style={{ color: 'var(--md-on-surface-variant)' }}>
+          {t('username')}
+        </label>
         <div className="relative">
-          <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-500" />
+          <User
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5"
+            style={{ color: 'var(--md-on-surface-variant)' }}
+          />
           <input
             type="text"
             value={username}
@@ -43,12 +67,17 @@ export function LoginForm() {
             autoComplete="username"
           />
         </div>
-      </div>
+      </motion.div>
 
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-dark-300">{t('password')}</label>
+      <motion.div variants={fadeUp} className="space-y-1.5">
+        <label className="md-label-medium" style={{ color: 'var(--md-on-surface-variant)' }}>
+          {t('password')}
+        </label>
         <div className="relative">
-          <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-dark-500" />
+          <Lock
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5"
+            style={{ color: 'var(--md-on-surface-variant)' }}
+          />
           <input
             type="password"
             value={password}
@@ -59,16 +88,39 @@ export function LoginForm() {
             autoComplete="current-password"
           />
         </div>
-      </div>
+      </motion.div>
 
-      <button type="submit" disabled={isLoading} className="btn btn-primary w-full py-3 text-base">
-        {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><LogIn className="w-5 h-5" />{t('login')}</>}
-      </button>
+      <motion.div variants={fadeUp}>
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="btn btn-primary w-full py-3"
+        >
+          {isLoading ? (
+            <Loader2 className="w-5 h-5 animate-spin" />
+          ) : (
+            <>
+              <LogIn className="w-5 h-5" />
+              {t('login')}
+            </>
+          )}
+        </button>
+      </motion.div>
 
-      <p className="text-center text-dark-400">
+      <motion.p
+        variants={fadeUp}
+        className="text-center md-body-medium"
+        style={{ color: 'var(--md-on-surface-variant)' }}
+      >
         {t('noAccount')}{' '}
-        <Link to="/register" className="text-[#B99470] hover:text-[#A9B388] font-medium">{t('signUp')}</Link>
-      </p>
-    </form>
+        <Link
+          to="/register"
+          className="font-medium transition-colors"
+          style={{ color: 'var(--md-primary)' }}
+        >
+          {t('signUp')}
+        </Link>
+      </motion.p>
+    </motion.form>
   )
 }

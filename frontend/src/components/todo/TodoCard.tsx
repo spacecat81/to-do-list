@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Pencil, Trash2, Clock, MoreHorizontal } from 'lucide-react'
@@ -15,7 +16,7 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
   const [showMenu, setShowMenu] = useState(false)
   const { deleteTodo } = useTodoStore()
   const { t, language } = useSettingsStore()
-  
+
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id })
 
   const style = { transform: CSS.Transform.toString(transform), transition }
@@ -32,45 +33,102 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
   }
 
   return (
-    <div
+    <motion.div
       ref={setNodeRef}
       style={style}
-      className={`group bg-dark-800 rounded-xl border border-dark-700/50 p-4 hover:border-dark-600 transition-all duration-200 ${isDragging ? 'opacity-50 shadow-2xl scale-105 rotate-2' : 'opacity-100'}`}
+      layout
+      initial={{ opacity: 0, y: 8 }}
+      animate={{
+        opacity: isDragging ? 0.5 : 1,
+        y: 0,
+        scale: isDragging ? 1.03 : 1,
+        boxShadow: isDragging
+          ? '0 8px 16px 4px rgba(0,0,0,.2), 0 4px 6px 0 rgba(0,0,0,.3)'
+          : '0 0 0 0 rgba(0,0,0,0)',
+      }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.2 }}
+      whileHover={{
+        boxShadow: '0 1px 3px 1px rgba(0,0,0,.15), 0 1px 2px 0 rgba(0,0,0,.3)',
+      }}
+      className="group card-outlined p-4 cursor-default"
     >
       <div className="flex items-start gap-2 mb-2">
-        <button {...attributes} {...listeners} className="mt-0.5 p-1 -ml-1 text-dark-500 hover:text-dark-300 cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity">
+        <button
+          {...attributes}
+          {...listeners}
+          className="mt-0.5 p-1 -ml-1 rounded-sm cursor-grab active:cursor-grabbing opacity-0 group-hover:opacity-100 transition-opacity"
+          style={{ color: 'var(--md-on-surface-variant)' }}
+        >
           <GripVertical className="w-4 h-4" />
         </button>
-        
-        <h4 className="flex-1 font-medium text-dark-100 line-clamp-2">{todo.title}</h4>
+
+        <h4
+          className="flex-1 font-medium line-clamp-2 md-title-small"
+          style={{ color: 'var(--md-on-surface)' }}
+        >
+          {todo.title}
+        </h4>
 
         <div className="relative">
-          <button onClick={() => setShowMenu(!showMenu)} className="p-1.5 text-dark-500 hover:text-dark-300 hover:bg-dark-700 rounded-lg transition-colors opacity-0 group-hover:opacity-100">
+          <button
+            onClick={() => setShowMenu(!showMenu)}
+            className="icon-btn w-8 h-8 opacity-0 group-hover:opacity-100 transition-opacity"
+          >
             <MoreHorizontal className="w-4 h-4" />
           </button>
 
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-8 z-20 w-36 bg-dark-700 rounded-xl border border-dark-600 shadow-xl overflow-hidden animate-scale-in">
-                <button onClick={() => { onEdit(todo); setShowMenu(false) }} className="w-full px-4 py-2.5 text-left text-sm text-dark-200 hover:bg-dark-600 flex items-center gap-2">
-                  <Pencil className="w-4 h-4" />{t('edit')}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.92, y: -4 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.12 }}
+                className="absolute right-0 top-8 z-20 w-40 rounded-md py-1 overflow-hidden"
+                style={{
+                  backgroundColor: 'var(--md-surface-container)',
+                  boxShadow: '0 2px 6px 2px rgba(0,0,0,.15), 0 1px 2px 0 rgba(0,0,0,.3)',
+                }}
+              >
+                <button
+                  onClick={() => { onEdit(todo); setShowMenu(false) }}
+                  className="w-full px-3 py-2.5 text-left md-body-medium flex items-center gap-3 transition-colors hover:bg-md-on-surface/[0.08]"
+                  style={{ color: 'var(--md-on-surface)' }}
+                >
+                  <Pencil className="w-4 h-4" />
+                  {t('edit')}
                 </button>
-                <button onClick={handleDelete} className="w-full px-4 py-2.5 text-left text-sm text-red-400 hover:bg-red-500/10 flex items-center gap-2">
-                  <Trash2 className="w-4 h-4" />{t('delete')}
+                <button
+                  onClick={handleDelete}
+                  className="w-full px-3 py-2.5 text-left md-body-medium flex items-center gap-3 transition-colors hover:bg-md-error/[0.08]"
+                  style={{ color: 'var(--md-error)' }}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  {t('delete')}
                 </button>
-              </div>
+              </motion.div>
             </>
           )}
         </div>
       </div>
 
-      {todo.description && <p className="text-sm text-dark-400 line-clamp-3 mb-3 ml-6">{todo.description}</p>}
+      {todo.description && (
+        <p
+          className="md-body-small line-clamp-3 mb-3 ml-6"
+          style={{ color: 'var(--md-on-surface-variant)' }}
+        >
+          {todo.description}
+        </p>
+      )}
 
-      <div className="flex items-center gap-2 ml-6 text-xs text-dark-500">
+      <div
+        className="flex items-center gap-2 ml-6 md-label-small"
+        style={{ color: 'var(--md-outline)' }}
+      >
         <Clock className="w-3.5 h-3.5" />
         <span>{formatDate(todo.created_at)}</span>
       </div>
-    </div>
+    </motion.div>
   )
 }

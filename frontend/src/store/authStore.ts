@@ -6,55 +6,46 @@ interface AuthState {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
-  error: string | null
   
   login: (credentials: LoginCredentials) => Promise<void>
   register: (data: UserCreate) => Promise<void>
   logout: () => void
   checkAuth: () => Promise<void>
-  clearError: () => void
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   isLoading: true,
   isAuthenticated: false,
-  error: null,
 
   login: async (credentials) => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true })
     try {
       await api.login(credentials)
       const user = await api.getCurrentUser()
       set({ user, isAuthenticated: true, isLoading: false })
     } catch (error) {
-      set({ 
-        error: error instanceof Error ? error.message : 'Login failed',
-        isLoading: false 
-      })
+      set({ isLoading: false })
       throw error
     }
   },
 
   register: async (data) => {
-    set({ isLoading: true, error: null })
+    set({ isLoading: true })
     try {
       await api.register(data)
       await api.login({ username: data.username, password: data.password })
       const user = await api.getCurrentUser()
       set({ user, isAuthenticated: true, isLoading: false })
     } catch (error) {
-      set({ 
-        error: error instanceof Error ? error.message : 'Registration failed',
-        isLoading: false 
-      })
+      set({ isLoading: false })
       throw error
     }
   },
 
   logout: () => {
     api.logout()
-    set({ user: null, isAuthenticated: false, error: null })
+    set({ user: null, isAuthenticated: false })
   },
 
   checkAuth: async () => {
@@ -72,6 +63,4 @@ export const useAuthStore = create<AuthState>((set) => ({
       set({ user: null, isAuthenticated: false, isLoading: false })
     }
   },
-
-  clearError: () => set({ error: null }),
 }))

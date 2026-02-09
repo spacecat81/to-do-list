@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { DndContext, DragEndEvent, DragOverEvent, DragStartEvent, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core'
+import { motion } from 'framer-motion'
 import type { Todo, TaskStatus } from '../../types'
 import { useTodoStore } from '../../store/todoStore'
-import { useSettingsStore } from '../../store/settingsStore'
 import { TodoColumn } from './TodoColumn'
 import { TodoCard } from './TodoCard'
 import { TodoModal } from './TodoModal'
+import { ColumnSkeleton } from '../ui/Skeleton'
 
 export function KanbanBoard() {
   const { todos, fetchTodos, updateTodoStatus, isLoading } = useTodoStore()
-  const { t } = useSettingsStore()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingTodo, setEditingTodo] = useState<Todo | null>(null)
   const [activeTodo, setActiveTodo] = useState<Todo | null>(null)
@@ -51,11 +51,10 @@ export function KanbanBoard() {
 
   if (isLoading && todos.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-[#A9B388]/30 border-t-[#A9B388] rounded-full animate-spin" />
-          <p className="text-dark-400">{t('loadingTasks')}</p>
-        </div>
+      <div className="flex gap-6 overflow-x-auto pb-4 px-1">
+        <ColumnSkeleton />
+        <ColumnSkeleton />
+        <ColumnSkeleton />
       </div>
     )
   }
@@ -63,13 +62,26 @@ export function KanbanBoard() {
   return (
     <>
       <DndContext sensors={sensors} onDragStart={handleDragStart} onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
-        <div className="flex gap-6 overflow-x-auto pb-4 px-1">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
+          className="flex gap-6 overflow-x-auto pb-4 px-1"
+        >
           {(['todo', 'in_progress', 'done'] as TaskStatus[]).map((status) => (
             <TodoColumn key={status} status={status} todos={todosByStatus[status]} onAddClick={handleAddClick} onEditTodo={handleEditTodo} />
           ))}
-        </div>
+        </motion.div>
         <DragOverlay>
-          {activeTodo && <div className="rotate-3 opacity-90"><TodoCard todo={activeTodo} onEdit={() => {}} /></div>}
+          {activeTodo && (
+            <motion.div
+              initial={{ rotate: 0, scale: 1 }}
+              animate={{ rotate: 3, scale: 1.05 }}
+              className="opacity-90"
+            >
+              <TodoCard todo={activeTodo} onEdit={() => {}} />
+            </motion.div>
+          )}
         </DragOverlay>
       </DndContext>
       <TodoModal isOpen={isModalOpen} onClose={handleCloseModal} editTodo={editingTodo} />
