@@ -25,7 +25,6 @@ make up
 ## Usage
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000
 - **API Documentation**:
   - http://localhost:8000/docs (Swagger UI)
   - http://localhost:8000/redoc (ReDoc)
