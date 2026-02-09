@@ -21,9 +21,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app/app
-      - ./pyproject.toml:/app/pyproject.toml
-      - ./uv.lock:/app/uv.lock
+      - ./:/app
     restart: unless-stopped
     env_file:
       - .env
