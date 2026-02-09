@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { GripVertical, Pencil, Trash2, Clock, MoreHorizontal } from 'lucide-react'
@@ -19,7 +18,12 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
 
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: todo.id })
 
-  const style = { transform: CSS.Transform.toString(transform), transition }
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    scale: isDragging ? 1.03 : 1,
+  }
 
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
@@ -33,25 +37,10 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
   }
 
   return (
-    <motion.div
+    <div
       ref={setNodeRef}
       style={style}
-      layout
-      initial={{ opacity: 0, y: 8 }}
-      animate={{
-        opacity: isDragging ? 0.5 : 1,
-        y: 0,
-        scale: isDragging ? 1.03 : 1,
-        boxShadow: isDragging
-          ? '0 8px 16px 4px rgba(0,0,0,.2), 0 4px 6px 0 rgba(0,0,0,.3)'
-          : '0 0 0 0 rgba(0,0,0,0)',
-      }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      transition={{ duration: 0.2 }}
-      whileHover={{
-        boxShadow: '0 1px 3px 1px rgba(0,0,0,.15), 0 1px 2px 0 rgba(0,0,0,.3)',
-      }}
-      className="group card-outlined p-4 cursor-default"
+      className={`group card-outlined p-4 cursor-default transition-shadow duration-200 hover:shadow-md ${isDragging ? 'shadow-lg' : ''}`}
     >
       <div className="flex items-start gap-2 mb-2">
         <button
@@ -81,10 +70,7 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <motion.div
-                initial={{ opacity: 0, scale: 0.92, y: -4 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.12 }}
+              <div
                 className="absolute right-0 top-8 z-20 w-40 rounded-md py-1 overflow-hidden"
                 style={{
                   backgroundColor: 'var(--md-surface-container)',
@@ -107,7 +93,7 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
                   <Trash2 className="w-4 h-4" />
                   {t('delete')}
                 </button>
-              </motion.div>
+              </div>
             </>
           )}
         </div>
@@ -129,6 +115,6 @@ export function TodoCard({ todo, onEdit }: TodoCardProps) {
         <Clock className="w-3.5 h-3.5" />
         <span>{formatDate(todo.created_at)}</span>
       </div>
-    </motion.div>
+    </div>
   )
 }

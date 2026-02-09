@@ -24,38 +24,33 @@ export function RegisterForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [shaking, setShaking] = useState(false)
-  const { register, isLoading } = useAuthStore()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { register } = useAuthStore()
   const { t } = useSettingsStore()
   const navigate = useNavigate()
-
-  const triggerShake = () => {
-    setShaking(true)
-    setTimeout(() => setShaking(false), 500)
-  }
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
 
     if (password !== confirmPassword) {
       toast.error(t('passwordsMismatch'))
-      triggerShake()
       return
     }
 
     if (password.length < 8) {
       toast.error(t('passwordTooShort'))
-      triggerShake()
       return
     }
 
+    setIsSubmitting(true)
     try {
       await register({ email, username, password })
       navigate('/')
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Registration failed'
       toast.error(message)
-      triggerShake()
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -65,7 +60,7 @@ export function RegisterForm() {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className={`space-y-4 ${shaking ? 'animate-shake' : ''}`}
+      className="space-y-4"
     >
       <motion.div variants={fadeUp} className="space-y-1.5">
         <label className="md-label-medium" style={{ color: 'var(--md-on-surface-variant)' }}>
@@ -154,10 +149,10 @@ export function RegisterForm() {
       <motion.div variants={fadeUp}>
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="btn btn-primary w-full py-3"
         >
-          {isLoading ? (
+          {isSubmitting ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <>

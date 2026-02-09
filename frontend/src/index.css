@@ -410,3 +410,43 @@ body {
     opacity: 0.12;
   }
 }
+
+/* ==================== Sonner Toast Overrides ==================== */
+
+[data-sonner-toaster] [data-sonner-toast] {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type="error"] {
+  background-color: var(--md-error-container) !important;
+  color: var(--md-on-error-container) !important;
+  border: 1px solid var(--md-error) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type="success"] {
+  background-color: var(--md-tertiary-container) !important;
+  color: var(--md-on-tertiary-container) !important;
+  border: 1px solid var(--md-tertiary) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast][data-type="error"] [data-icon],
+[data-sonner-toaster] [data-sonner-toast][data-type="success"] [data-icon] {
+  display: none;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-content] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  text-align: center;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-title] {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 22px;
+  letter-spacing: 0.15px;
+  text-align: center;
+  width: 100%;
+}

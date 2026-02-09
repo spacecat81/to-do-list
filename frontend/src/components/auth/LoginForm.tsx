@@ -22,21 +22,23 @@ const fadeUp = {
 export function LoginForm() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [shaking, setShaking] = useState(false)
-  const { login, isLoading } = useAuthStore()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { login } = useAuthStore()
   const { t } = useSettingsStore()
   const navigate = useNavigate()
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
+    setIsSubmitting(true)
     try {
       await login({ username, password })
       navigate('/')
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Login failed'
-      toast.error(message)
-      setShaking(true)
-      setTimeout(() => setShaking(false), 500)
+    } catch {
+      toast.error(t('invalidCredentials'))
+      setUsername('')
+      setPassword('')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -46,7 +48,7 @@ export function LoginForm() {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className={`space-y-5 ${shaking ? 'animate-shake' : ''}`}
+      className="space-y-5"
     >
       <motion.div variants={fadeUp} className="space-y-1.5">
         <label className="md-label-medium" style={{ color: 'var(--md-on-surface-variant)' }}>
@@ -93,10 +95,10 @@ export function LoginForm() {
       <motion.div variants={fadeUp}>
         <button
           type="submit"
-          disabled={isLoading}
+          disabled={isSubmitting}
           className="btn btn-primary w-full py-3"
         >
-          {isLoading ? (
+          {isSubmitting ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <>

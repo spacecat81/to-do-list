@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CheckSquare, LogOut, User, Sun, Moon, ChevronDown } from 'lucide-react'
 import { useAuthStore } from '../../store/authStore'
@@ -21,6 +22,12 @@ export function Header() {
   const { user, logout } = useAuthStore()
   const { language, theme, setLanguage, toggleTheme, t } = useSettingsStore()
   const [showLangMenu, setShowLangMenu] = useState(false)
+  const navigate = useNavigate()
+
+  const handleLogout = () => {
+    logout()
+    navigate('/login', { replace: true })
+  }
 
   return (
     <header
@@ -133,7 +140,7 @@ export function Header() {
             {/* Logout */}
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={logout}
+              onClick={handleLogout}
               className="btn btn-ghost px-3 sm:px-4"
               title={t('logout')}
             >

@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { Plus, Circle, CheckCircle2 } from 'lucide-react'
 import type { Todo, TaskStatus } from '../../types'
 import { TodoCard } from './TodoCard'
@@ -97,11 +97,9 @@ export function TodoColumn({ status, todos, onAddClick, onEditTodo }: TodoColumn
         style={{ borderColor: 'var(--md-outline-variant)' }}
       >
         <SortableContext items={todos.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-          <AnimatePresence mode="popLayout">
-            {todos.map((todo) => (
-              <TodoCard key={todo.id} todo={todo} onEdit={onEditTodo} />
-            ))}
-          </AnimatePresence>
+          {todos.map((todo) => (
+            <TodoCard key={todo.id} todo={todo} onEdit={onEditTodo} />
+          ))}
         </SortableContext>
 
         {todos.length === 0 && (

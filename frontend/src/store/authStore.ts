@@ -19,26 +19,22 @@ export const useAuthStore = create<AuthState>((set) => ({
   isAuthenticated: false,
 
   login: async (credentials) => {
-    set({ isLoading: true })
     try {
       await api.login(credentials)
       const user = await api.getCurrentUser()
-      set({ user, isAuthenticated: true, isLoading: false })
+      set({ user, isAuthenticated: true })
     } catch (error) {
-      set({ isLoading: false })
       throw error
     }
   },
 
   register: async (data) => {
-    set({ isLoading: true })
     try {
       await api.register(data)
       await api.login({ username: data.username, password: data.password })
       const user = await api.getCurrentUser()
-      set({ user, isAuthenticated: true, isLoading: false })
+      set({ user, isAuthenticated: true })
     } catch (error) {
-      set({ isLoading: false })
       throw error
     }
   },

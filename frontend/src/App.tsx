@@ -79,23 +79,31 @@ export default function App() {
   return (
     <>
       <Toaster
-        position="bottom-center"
+        position="top-right"
         toastOptions={{
           style: {
-            background: 'var(--md-inverse-surface)',
-            color: 'var(--md-inverse-on-surface)',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '14px',
-            lineHeight: '20px',
-            letterSpacing: '0.25px',
-            boxShadow: '0 3px 5px -1px rgba(0,0,0,.2), 0 6px 10px 0 rgba(0,0,0,.14), 0 1px 18px 0 rgba(0,0,0,.12)',
+            background: 'var(--md-surface-container-high)',
+            color: 'var(--md-on-surface)',
+            border: '1px solid var(--md-outline-variant)',
+            borderRadius: '16px',
+            fontSize: '16px',
+            lineHeight: '24px',
+            letterSpacing: '0.15px',
+            padding: '16px 20px',
+            textAlign: 'center' as const,
+            boxShadow: '0 6px 10px 4px rgba(0,0,0,.15), 0 2px 3px 0 rgba(0,0,0,.3)',
+            minWidth: '300px',
+            maxWidth: '420px',
+          },
+          classNames: {
+            error: 'toast-error',
+            success: 'toast-success',
           },
         }}
         theme={theme === 'dark' ? 'dark' : 'light'}
       />
 
-      <AnimatePresence mode="wait">
+      <AnimatePresence>
         <Routes location={location} key={location.pathname}>
           <Route
             path="/"
