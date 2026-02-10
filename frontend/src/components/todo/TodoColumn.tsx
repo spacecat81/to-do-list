@@ -1,5 +1,7 @@
+import type { CSSProperties } from 'react'
 import { useDroppable } from '@dnd-kit/core'
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
+import { motion } from 'framer-motion'
 import { Plus, Circle, CheckCircle2 } from 'lucide-react'
 import type { Todo, TaskStatus } from '../../types'
 import { TodoCard } from './TodoCard'
@@ -14,16 +16,19 @@ interface TodoColumnProps {
   onEditTodo: (todo: Todo) => void
 }
 
-const columnConfig: Record<TaskStatus, { titleKey: TranslationKey; bgColor: string; iconColor: string }> = {
-  todo: { titleKey: 'todo', bgColor: 'bg-[#A9B388]/20', iconColor: 'text-[#A9B388]' },
-  in_progress: { titleKey: 'inProgress', bgColor: 'bg-[#B99470]/20', iconColor: 'text-[#B99470]' },
-  done: { titleKey: 'done', bgColor: 'bg-[#6b7d5c]/30', iconColor: 'text-[#FEFAE0]' },
+const columnConfig: Record<TaskStatus, {
+  titleKey: TranslationKey
+  accentVar: string
+}> = {
+  todo: { titleKey: 'todo', accentVar: '--md-primary' },
+  in_progress: { titleKey: 'inProgress', accentVar: '--md-tertiary' },
+  done: { titleKey: 'done', accentVar: '--md-secondary' },
 }
 
-function StatusIcon({ status, className }: { status: TaskStatus; className?: string }) {
-  if (status === 'todo') return <Circle className={className} />
-  if (status === 'in_progress') return <WritingPencil className={className} />
-  return <CheckCircle2 className={className} />
+function StatusIcon({ status, className, style }: { status: TaskStatus; className?: string; style?: CSSProperties }) {
+  if (status === 'todo') return <Circle className={className} style={style} />
+  if (status === 'in_progress') return <WritingPencil className={className} style={style} />
+  return <CheckCircle2 className={className} style={style} />
 }
 
 export function TodoColumn({ status, todos, onAddClick, onEditTodo }: TodoColumnProps) {
@@ -33,39 +38,80 @@ export function TodoColumn({ status, todos, onAddClick, onEditTodo }: TodoColumn
 
   return (
     <div className="flex flex-col min-w-[320px] max-w-[380px] w-full">
-      <div className={`flex items-center justify-between h-16 px-4 rounded-t-2xl ${config.bgColor} border-b border-dark-700/50`}>
+      {/* Column header */}
+      <div
+        className="flex items-center justify-between h-14 px-4 rounded-t-lg"
+        style={{ backgroundColor: 'var(--md-surface-container)' }}
+      >
         <div className="flex items-center gap-3">
           <div className="w-6 h-6 flex items-center justify-center">
-            <StatusIcon status={status} className={`w-5 h-5 ${config.iconColor}`} />
+            <StatusIcon
+              status={status}
+              className="w-5 h-5"
+              style={{ color: `var(${config.accentVar})` }}
+            />
           </div>
-          <h3 className="font-semibold text-dark-100">{t(config.titleKey)}</h3>
-          <span className="px-2.5 py-1 text-xs font-medium bg-dark-700/50 text-dark-300 rounded-full min-w-[28px] text-center">{todos.length}</span>
+          <h3
+            className="md-title-small"
+            style={{ color: 'var(--md-on-surface)' }}
+          >
+            {t(config.titleKey)}
+          </h3>
+          <motion.span
+            key={todos.length}
+            initial={{ scale: 1.3 }}
+            animate={{ scale: 1 }}
+            className="px-2.5 py-0.5 rounded-full md-label-small min-w-[24px] text-center"
+            style={{
+              backgroundColor: 'var(--md-surface-container-highest)',
+              color: 'var(--md-on-surface-variant)',
+            }}
+          >
+            {todos.length}
+          </motion.span>
         </div>
-        
+
         <div className="w-8 h-8 flex items-center justify-center">
           {status === 'todo' && (
-            <button onClick={onAddClick} className="p-1.5 text-dark-400 hover:text-dark-100 hover:bg-dark-700/50 rounded-lg transition-colors">
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={onAddClick}
+              className="icon-btn w-8 h-8"
+            >
               <Plus className="w-5 h-5" />
-            </button>
+            </motion.button>
           )}
         </div>
       </div>
 
-      <div
+      {/* Column body */}
+      <motion.div
         ref={setNodeRef}
-        className={`flex-1 p-3 space-y-3 rounded-b-2xl min-h-[200px] bg-dark-800/50 border border-t-0 border-dark-700/50 transition-colors duration-200 ${isOver ? 'bg-dark-700/50 border-[#A9B388]/50' : ''}`}
+        animate={{
+          backgroundColor: isOver
+            ? 'var(--md-primary-container)'
+            : 'var(--md-surface-container-low)',
+        }}
+        transition={{ duration: 0.2 }}
+        className="flex-1 p-3 space-y-3 rounded-b-lg min-h-[200px] border border-t-0"
+        style={{ borderColor: 'var(--md-outline-variant)' }}
       >
-        <SortableContext items={todos.map(t => t.id)} strategy={verticalListSortingStrategy}>
-          {todos.map((todo) => <TodoCard key={todo.id} todo={todo} onEdit={onEditTodo} />)}
+        <SortableContext items={todos.map((t) => t.id)} strategy={verticalListSortingStrategy}>
+          {todos.map((todo) => (
+            <TodoCard key={todo.id} todo={todo} onEdit={onEditTodo} />
+          ))}
         </SortableContext>
 
         {todos.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-8 text-dark-500">
-            <StatusIcon status={status} className={`w-8 h-8 mb-2 opacity-50 ${config.iconColor}`} />
-            <p className="text-sm">{t('empty')}</p>
+          <div
+            className="flex flex-col items-center justify-center py-8"
+            style={{ color: 'var(--md-outline)' }}
+          >
+            <StatusIcon status={status} className="w-8 h-8 mb-2 opacity-40" />
+            <p className="md-body-small">{t('empty')}</p>
           </div>
         )}
-      </div>
+      </motion.div>
     </div>
   )
 }
